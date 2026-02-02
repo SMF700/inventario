@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Inventário de TI - Fonseca Supermercados Ltda</title>
+  <title>Inventário de TI - União Supermercados Ltda</title>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -38,7 +38,7 @@
 <div id="app" style="display:none;">
   <div class="container">
     <h1>Inventário de Equipamentos de TI</h1>
-    <h2>Fonseca Supermercados Ltda</h2>
+    <h2>União Supermercados Ltda</h2>
 
     <form id="formInventario">
       <label>Patrimônio</label>
@@ -166,7 +166,7 @@ btnLogin.addEventListener('click', () => {
   const u = document.getElementById('loginUser').value;
   const p = document.getElementById('loginPass').value;
 
-  if (u === 'ti' && p === 'fonseca123') {
+  if (u === 'ti' && p === 'uniao123') {
     loginBox.style.display = 'none';
     app.style.display = 'block';
     carregarDados();
@@ -254,7 +254,7 @@ document.getElementById('btnXls').addEventListener('click', () => {
 document.getElementById('btnPdf').addEventListener('click', () => {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('l');
-  doc.text('Inventário de TI - Fonseca Supermercados Ltda', 14, 10);
+  doc.text('Inventário de TI - União Supermercados Ltda', 14, 10);
   doc.autoTable({ html: '#tabela', startY: 15 });
   doc.save('inventario_ti.pdf');
 });
