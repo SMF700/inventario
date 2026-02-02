@@ -120,6 +120,32 @@
       <div id="info" class="info"></div>
     </form>
 
+    <div class="filtros">
+      <h3>Filtro</h3>
+      <label>Buscar (Patrimônio / Modelo / Série / Local)</label>
+      <input type="text" id="filtroTexto" placeholder="Digite para filtrar">
+
+      <label>Tipo</label>
+      <select id="filtroTipo">
+        <option value="">Todos</option>
+        <option value="Computador">Computador</option>
+        <option value="PDV">PDV</option>
+        <option value="Impressora">Impressora</option>
+        <option value="Balança">Balança</option>
+        <option value="Servidor">Servidor</option>
+        <option value="Outro">Outro</option>
+      </select>
+
+      <label>Status</label>
+      <select id="filtroStatus">
+        <option value="">Todos</option>
+        <option value="Em uso">Em uso</option>
+        <option value="Estoque">Estoque</option>
+        <option value="Manutenção">Manutenção</option>
+        <option value="Baixado">Baixado</option>
+      </select>
+    </div>
+
     <div class="acoes">
       <button id="btnXls">Exportar XLS</button>
       <button id="btnPdf">Exportar PDF</button>
@@ -181,8 +207,7 @@ tipoSelect.addEventListener('change', () => {
 
 function carregarDados() {
   tabelaBody.innerHTML = '';
-  const dados = JSON.parse(localStorage.getItem('inventario_ti') || '[]');
-  dados.forEach(addLinhaTabela);
+  aplicarFiltro();
   infoDiv.textContent = 'Dados carregados do armazenamento local. Envio ao Google Sheets ativo.';
 }
 
@@ -286,6 +311,37 @@ document.getElementById('btnXls').addEventListener('click', () => {
   XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
   XLSX.writeFile(wb, 'inventario_ti.xlsx');
 });
+
+const filtroTexto = document.getElementById('filtroTexto');
+const filtroTipo = document.getElementById('filtroTipo');
+const filtroStatus = document.getElementById('filtroStatus');
+
+[filtroTexto, filtroTipo, filtroStatus].forEach(el => el.addEventListener('input', aplicarFiltro));
+
+function aplicarFiltro() {
+  tabelaBody.innerHTML = '';
+  const dados = JSON.parse(localStorage.getItem('inventario_ti') || '[]');
+
+  const texto = filtroTexto.value.toLowerCase();
+  const tipo = filtroTipo.value;
+  const status = filtroStatus.value;
+
+  dados
+    .filter(item => {
+      const textoOk = !texto || (
+        item.patrimonio.toLowerCase().includes(texto) ||
+        (item.modelo || '').toLowerCase().includes(texto) ||
+        (item.serial || '').toLowerCase().includes(texto) ||
+        item.local.toLowerCase().includes(texto)
+      );
+
+      const tipoOk = !tipo || item.tipo === tipo;
+      const statusOk = !status || item.status === status;
+
+      return textoOk && tipoOk && statusOk;
+    })
+    .forEach(addLinhaTabela);
+}
 
 document.getElementById('btnPdf').addEventListener('click', () => {
   const { jsPDF } = window.jspdf;
