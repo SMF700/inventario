@@ -139,7 +139,7 @@
           <th>SO</th>
           <th>Arquitetura</th>
           <th>Disco</th>
-          <th>Hostname/IP</th>
+          <th>Hostname/IP</th><th>Ações</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -226,7 +226,7 @@ form.addEventListener('submit', async (e) => {
   dadosTecnicos.style.display = 'none';
 });
 
-function addLinhaTabela(item) {
+function addLinhaTabela(item, index) {
   const tr = document.createElement('tr');
   tr.innerHTML = `
     <td>${item.patrimonio}</td>
@@ -240,8 +240,44 @@ function addLinhaTabela(item) {
     <td>${item.so || ''}</td>
     <td>${item.arquitetura || ''}</td>
     <td>${item.disco || ''}</td>
-    <td>${item.hostname || ''}</td>`;
+    <td>${item.hostname || ''}</td>
+    <td>
+      <button onclick="editarItem(${index})">Editar</button>
+      <button onclick="excluirItem(${index})" style="background:#dc3545">Excluir</button>
+    </td>`;
   tabelaBody.appendChild(tr);
+}
+
+function editarItem(index) {
+  const dados = JSON.parse(localStorage.getItem('inventario_ti') || '[]');
+  const item = dados[index];
+
+  patrimonio.value = item.patrimonio;
+  tipo.value = item.tipo;
+  modelo.value = item.modelo;
+  serial.value = item.serial;
+  local.value = item.local;
+  status.value = item.status;
+  processador.value = item.processador || '';
+  memoria.value = item.memoria || '';
+  so.value = item.so || '';
+  arquitetura.value = item.arquitetura || '';
+  disco.value = item.disco || '';
+  hostname.value = item.hostname || '';
+
+  dadosTecnicos.style.display = ['Computador', 'PDV'].includes(item.tipo) ? 'block' : 'none';
+
+  dados.splice(index, 1);
+  localStorage.setItem('inventario_ti', JSON.stringify(dados));
+  carregarDados();
+}
+
+function excluirItem(index) {
+  if (!confirm('Deseja realmente excluir este equipamento?')) return;
+  const dados = JSON.parse(localStorage.getItem('inventario_ti') || '[]');
+  dados.splice(index, 1);
+  localStorage.setItem('inventario_ti', JSON.stringify(dados));
+  carregarDados();
 }
 
 document.getElementById('btnXls').addEventListener('click', () => {
