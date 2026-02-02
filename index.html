@@ -31,129 +31,118 @@
   <input type="text" id="loginUser">
   <label>Senha</label>
   <input type="password" id="loginPass">
-  <button onclick="login()">Entrar</button>
+  <button id="btnLogin">Entrar</button>
 </div>
 
 <div id="app" style="display:none;">
-<div class="container">
-  <h1>Inventário de Equipamentos de TI</h1>
-  <h2>Fonseca Supermercados Ltda</h2>
+  <div class="container">
+    <h1>Inventário de Equipamentos de TI</h1>
+    <h2>Fonseca Supermercados Ltda</h2>
 
-  <form id="formInventario">
-    <label>Patrimônio</label>
-    <input type="text" id="patrimonio" required>
+    <form id="formInventario">
+      <label>Patrimônio</label>
+      <input type="text" id="patrimonio" required>
 
-    <label>Tipo de Equipamento</label>
-    <select id="tipo" required>
-      <option value="">Selecione</option>
-      <option value="Computador">Computador</option>
-      <option value="PDV">PDV</option>
-      <option value="Impressora">Impressora</option>
-      <option value="Balança">Balança</option>
-      <option value="Servidor">Servidor</option>
-      <option value="Outro">Outro</option>
-    </select>
-
-    <label>Modelo</label>
-    <input type="text" id="modelo">
-
-    <label>Número de Série</label>
-    <input type="text" id="serial">
-
-    <label>Local / Loja</label>
-    <input type="text" id="local" required>
-
-    <label>Status</label>
-    <select id="status">
-      <option value="Em uso">Em uso</option>
-      <option value="Estoque">Estoque</option>
-      <option value="Manutenção">Manutenção</option>
-      <option value="Baixado">Baixado</option>
-    </select>
-
-    <div id="dadosTecnicos">
-      <h3>Dados Técnicos (PDV / Computador)</h3>
-      <label>Processador</label>
-      <input type="text" id="processador">
-
-      <label>Memória (RAM)</label>
-      <select id="memoria">
+      <label>Tipo de Equipamento</label>
+      <select id="tipo" required>
         <option value="">Selecione</option>
-        <option value="2 GB">2 GB</option>
-        <option value="4 GB">4 GB</option>
-        <option value="8 GB">8 GB</option>
-        <option value="16 GB">16 GB</option>
-      </select>
-
-      <label>Sistema Operacional</label>
-      <select id="so">
-        <option value="">Selecione</option>
-        <option value="Windows 10">Windows 10</option>
-        <option value="Windows 11">Windows 11</option>
-        <option value="Linux">Linux</option>
+        <option value="Computador">Computador</option>
+        <option value="PDV">PDV</option>
+        <option value="Impressora">Impressora</option>
+        <option value="Balança">Balança</option>
+        <option value="Servidor">Servidor</option>
         <option value="Outro">Outro</option>
       </select>
 
-      <label>Arquitetura</label>
-      <select id="arquitetura">
-        <option value="">Selecione</option>
-        <option value="64 bits">64 bits</option>
-        <option value="32 bits">32 bits</option>
+      <label>Modelo</label>
+      <input type="text" id="modelo">
+
+      <label>Número de Série</label>
+      <input type="text" id="serial">
+
+      <label>Local / Loja</label>
+      <input type="text" id="local" required>
+
+      <label>Status</label>
+      <select id="status">
+        <option value="Em uso">Em uso</option>
+        <option value="Estoque">Estoque</option>
+        <option value="Manutenção">Manutenção</option>
+        <option value="Baixado">Baixado</option>
       </select>
 
-      <label>Tipo de Disco</label>
-      <select id="disco">
-        <option value="">Selecione</option>
-        <option value="HD">HD</option>
-        <option value="SSD">SSD</option>
-        <option value="NVMe">NVMe</option>
-      </select>
+      <div id="dadosTecnicos">
+        <h3>Dados Técnicos (PDV / Computador)</h3>
+        <label>Processador</label>
+        <input type="text" id="processador">
 
-      <label>Hostname / IP</label>
-      <input type="text" id="hostname">
+        <label>Memória (RAM)</label>
+        <select id="memoria">
+          <option value="">Selecione</option>
+          <option value="2 GB">2 GB</option>
+          <option value="4 GB">4 GB</option>
+          <option value="8 GB">8 GB</option>
+          <option value="16 GB">16 GB</option>
+        </select>
+
+        <label>Sistema Operacional</label>
+        <select id="so">
+          <option value="">Selecione</option>
+          <option value="Windows 10">Windows 10</option>
+          <option value="Windows 11">Windows 11</option>
+          <option value="Linux">Linux</option>
+          <option value="Outro">Outro</option>
+        </select>
+
+        <label>Arquitetura</label>
+        <select id="arquitetura">
+          <option value="">Selecione</option>
+          <option value="64 bits">64 bits</option>
+          <option value="32 bits">32 bits</option>
+        </select>
+
+        <label>Tipo de Disco</label>
+        <select id="disco">
+          <option value="">Selecione</option>
+          <option value="HD">HD</option>
+          <option value="SSD">SSD</option>
+          <option value="NVMe">NVMe</option>
+        </select>
+
+        <label>Hostname / IP</label>
+        <input type="text" id="hostname">
+      </div>
+
+      <button type="submit">Salvar Equipamento</button>
+      <div id="erro" class="erro"></div>
+      <div id="info" class="info"></div>
+    </form>
+
+    <div class="acoes">
+      <button id="btnXls">Exportar XLS</button>
+      <button id="btnPdf">Exportar PDF</button>
     </div>
 
-    <button type="submit">Salvar Equipamento</button>
-    <div id="erro" class="erro"></div>
-    <div id="info" class="info"></div>
-  </form>
-
-  <div class="acoes">
-    <button onclick="exportarXLS()">Exportar XLS</button>
-    <button onclick="exportarPDF()">Exportar PDF</button>
+    <table id="tabela">
+      <thead>
+        <tr>
+          <th>Patrimônio</th><th>Tipo</th><th>Modelo</th><th>Série</th><th>Local</th><th>Status</th><th>Processador</th><th>Memória</th><th>SO</th><th>Arquitetura</th><th>Disco</th><th>Hostname/IP</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
-
-  <table id="tabela">
-    <thead>
-      <tr>
-        <th>Patrimônio</th><th>Tipo</th><th>Modelo</th><th>Série</th><th>Local</th><th>Status</th><th>Processador</th><th>Memória</th><th>SO</th><th>Arquitetura</th><th>Disco</th><th>Hostname/IP</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</div>
 </div>
 
 <script>
-function login(){
-  const u = document.getElementById('loginUser').value;
-  const p = document.getElementById('loginPass').value;
-  if(u === 'ti' && p === 'fonseca123'){
-    document.getElementById('loginBox').style.display='none';
-    document.getElementById('app').style.display='block';
-    carregarDados();
-  } else {
-    alert('Usuário ou senha inválidos');
-  }
-}
+'use strict';
 
-// IMPORTANTE: o Apps Script DEVE estar publicado como Web App
-// Execução: "Qualquer pessoa" | Acesso: "Qualquer pessoa"
 const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbwizAPmPnXprPfl04sgdcz007dY6AlLBZu1CwLekgo5qcd0UNkpCVKvlQGFYhYHraKk8g/exec';
 
-// OBS: Google Apps Script NÃO permite CORS customizado.
-// Para POST funcionar em sites externos (GitHub/Netlify), usamos no-cors e não lemos o body.
-
+// ELEMENTOS
+const loginBox = document.getElementById('loginBox');
+const app = document.getElementById('app');
+const btnLogin = document.getElementById('btnLogin');
 const form = document.getElementById('formInventario');
 const tabelaBody = document.querySelector('#tabela tbody');
 const tipoSelect = document.getElementById('tipo');
@@ -161,31 +150,96 @@ const dadosTecnicos = document.getElementById('dadosTecnicos');
 const erroDiv = document.getElementById('erro');
 const infoDiv = document.getElementById('info');
 
-tipoSelect.addEventListener('change', () => {
-  dadosTecnicos.style.display = ['Computador','PDV'].includes(tipoSelect.value) ? 'block' : 'none';
+// LOGIN
+btnLogin.addEventListener('click', () => {
+  const u = document.getElementById('loginUser').value;
+  const p = document.getElementById('loginPass').value;
+
+  if (u === 'ti' && p === 'fonseca123') {
+    loginBox.style.display = 'none';
+    app.style.display = 'block';
+    carregarDados();
+  } else {
+    alert('Usuário ou senha inválidos');
+  }
 });
 
+// EXIBIR DADOS TÉCNICOS
+tipoSelect.addEventListener('change', () => {
+  dadosTecnicos.style.display = ['Computador', 'PDV'].includes(tipoSelect.value) ? 'block' : 'none';
+});
+
+// CARREGAR DADOS (GET)
 async function carregarDados() {
   tabelaBody.innerHTML = '';
   erroDiv.textContent = '';
-  infoDiv.textContent = 'Conectando ao Google Sheets...';
+  infoDiv.textContent = 'Carregando dados do Google Sheets...';
 
   try {
-    const res = await fetch(SHEETS_API_URL, {
-      method:'POST',
-      mode:'no-cors',
-      headers:{ 'Content-Type':'application/json' },
+    const res = await fetch(SHEETS_API_URL);
+    const dados = await res.json();
+
+    if (!Array.isArray(dados)) throw new Error('Resposta inválida');
+
+    dados.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${item.patrimonio || ''}</td>
+        <td>${item.tipo || ''}</td>
+        <td>${item.modelo || ''}</td>
+        <td>${item.serial || ''}</td>
+        <td>${item.local || ''}</td>
+        <td>${item.status || ''}</td>
+        <td>${item.processador || ''}</td>
+        <td>${item.memoria || ''}</td>
+        <td>${item.so || ''}</td>
+        <td>${item.arquitetura || ''}</td>
+        <td>${item.disco || ''}</td>
+        <td>${item.hostname || ''}</td>`;
+      tabelaBody.appendChild(tr);
+    });
+
+    infoDiv.textContent = `Registros carregados: ${dados.length}`;
+  } catch (e) {
+    erroDiv.textContent = 'Erro ao carregar dados do Google Sheets.';
+    infoDiv.textContent = '';
+    console.error(e);
+  }
+}
+
+// SALVAR (POST no-cors)
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  erroDiv.textContent = '';
+  infoDiv.textContent = 'Enviando registro...';
+
+  const item = {
+    patrimonio: patrimonio.value,
+    tipo: tipo.value,
+    modelo: modelo.value,
+    serial: serial.value,
+    local: local.value,
+    status: status.value,
+    processador: processador.value,
+    memoria: memoria.value,
+    so: so.value,
+    arquitetura: arquitetura.value,
+    disco: disco.value,
+    hostname: hostname.value,
+    dataCadastro: new Date().toISOString()
+  };
+
+  try {
+    await fetch(SHEETS_API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(item)
     });
 
-    // no-cors não permite ler resposta, assumimos sucesso se não lançar exceção
-
-    if (!res.ok) throw new Error('Falha HTTP: ' + res.status);
-
-    // resposta não disponível em no-cors
-    infoDiv.textContent = 'Registro enviado ao Google Sheets (modo compatível CORS)';
+    infoDiv.textContent = 'Registro enviado ao Google Sheets.';
     form.reset();
-    dadosTecnicos.style.display='none';
+    dadosTecnicos.style.display = 'none';
     carregarDados();
   } catch (e) {
     erroDiv.textContent = 'Erro ao salvar no Google Sheets.';
@@ -194,20 +248,21 @@ async function carregarDados() {
   }
 });
 
-function exportarXLS() {
+// EXPORTAÇÕES
+document.getElementById('btnXls').addEventListener('click', () => {
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.table_to_sheet(document.getElementById('tabela'));
   XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
   XLSX.writeFile(wb, 'inventario_ti.xlsx');
-}
+});
 
-function exportarPDF() {
+document.getElementById('btnPdf').addEventListener('click', () => {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('l');
   doc.text('Inventário de TI - Fonseca Supermercados Ltda', 14, 10);
   doc.autoTable({ html: '#tabela', startY: 15 });
   doc.save('inventario_ti.pdf');
-}
+});
 </script>
 </body>
 </html>
