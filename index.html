@@ -151,6 +151,9 @@ function login(){
 // Execução: "Qualquer pessoa" | Acesso: "Qualquer pessoa"
 const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbwizAPmPnXprPfl04sgdcz007dY6AlLBZu1CwLekgo5qcd0UNkpCVKvlQGFYhYHraKk8g/exec';
 
+// OBS: Google Apps Script NÃO permite CORS customizado.
+// Para POST funcionar em sites externos (GitHub/Netlify), usamos no-cors e não lemos o body.
+
 const form = document.getElementById('formInventario');
 const tabelaBody = document.querySelector('#tabela tbody');
 const tipoSelect = document.getElementById('tipo');
@@ -168,71 +171,19 @@ async function carregarDados() {
   infoDiv.textContent = 'Conectando ao Google Sheets...';
 
   try {
-    const res = await fetch(SHEETS_API_URL, { method:'GET' });
-
-    if (!res.ok) throw new Error('Falha HTTP: ' + res.status);
-
-    const dados = await res.json();
-    if (!Array.isArray(dados)) throw new Error('Resposta inválida do Sheets');
-
-    infoDiv.textContent = `Registros carregados: ${dados.length}`;
-
-    dados.forEach(item => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${item.patrimonio || ''}</td>
-        <td>${item.tipo || ''}</td>
-        <td>${item.modelo || ''}</td>
-        <td>${item.serial || ''}</td>
-        <td>${item.local || ''}</td>
-        <td>${item.status || 'Em uso'}</td>
-        <td>${item.processador || ''}</td>
-        <td>${item.memoria || ''}</td>
-        <td>${item.so || ''}</td>
-        <td>${item.arquitetura || ''}</td>
-        <td>${item.disco || ''}</td>
-        <td>${item.hostname || ''}</td>`;
-      tabelaBody.appendChild(tr);
-    });
-  } catch (e) {
-    erroDiv.textContent = 'Erro de conexão com o Google Sheets.';
-    infoDiv.textContent = '';
-    console.error(e);
-  }
-}
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  erroDiv.textContent = '';
-  infoDiv.textContent = 'Salvando no Google Sheets...';
-
-  const item = {
-    patrimonio: patrimonio.value,
-    tipo: tipo.value,
-    modelo: modelo.value,
-    serial: serial.value,
-    local: local.value.trim().toUpperCase(),
-    status: status.value || 'Em uso',
-    processador: processador.value,
-    memoria: memoria.value,
-    so: so.value,
-    arquitetura: arquitetura.value,
-    disco: disco.value,
-    hostname: hostname.value,
-    dataCadastro: new Date().toISOString()
-  };
-
-  try {
     const res = await fetch(SHEETS_API_URL, {
       method:'POST',
+      mode:'no-cors',
       headers:{ 'Content-Type':'application/json' },
       body: JSON.stringify(item)
     });
 
+    // no-cors não permite ler resposta, assumimos sucesso se não lançar exceção
+
     if (!res.ok) throw new Error('Falha HTTP: ' + res.status);
 
-    await res.json();
-    infoDiv.textContent = 'Registro salvo com sucesso';
+    // resposta não disponível em no-cors
+    infoDiv.textContent = 'Registro enviado ao Google Sheets (modo compatível CORS)';
     form.reset();
     dadosTecnicos.style.display='none';
     carregarDados();
