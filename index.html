@@ -17,7 +17,6 @@
     table { width:100%; border-collapse:collapse; margin-top:20px; }
     th,td { border:1px solid #ccc; padding:6px; text-align:left; font-size:13px; }
     th { background:var(--verde); color:#fff; }
-    .acoes button { margin-right:5px; }
     #dadosTecnicos { display:none; border-top:1px solid #ddd; margin-top:15px; padding-top:15px; }
     .erro { color:#dc3545; font-weight:bold; margin-top:10px; }
     .info { color:#0d6efd; font-weight:bold; margin-top:10px; }
@@ -139,7 +138,6 @@
 
 const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbwizAPmPnXprPfl04sgdcz007dY6AlLBZu1CwLekgo5qcd0UNkpCVKvlQGFYhYHraKk8g/exec';
 
-// ELEMENTOS
 const loginBox = document.getElementById('loginBox');
 const app = document.getElementById('app');
 const btnLogin = document.getElementById('btnLogin');
@@ -150,11 +148,9 @@ const dadosTecnicos = document.getElementById('dadosTecnicos');
 const erroDiv = document.getElementById('erro');
 const infoDiv = document.getElementById('info');
 
-// LOGIN
 btnLogin.addEventListener('click', () => {
   const u = document.getElementById('loginUser').value;
   const p = document.getElementById('loginPass').value;
-
   if (u === 'ti' && p === 'fonseca123') {
     loginBox.style.display = 'none';
     app.style.display = 'block';
@@ -164,55 +160,17 @@ btnLogin.addEventListener('click', () => {
   }
 });
 
-// EXIBIR DADOS TÉCNICOS
 tipoSelect.addEventListener('change', () => {
   dadosTecnicos.style.display = ['Computador', 'PDV'].includes(tipoSelect.value) ? 'block' : 'none';
 });
 
-// CARREGAR DADOS (GET)
-async function carregarDados() {
+function carregarDados() {
   tabelaBody.innerHTML = '';
-  erroDiv.textContent = '';
-  infoDiv.textContent = 'Carregando dados do Google Sheets...';
-
-  try {
-    const res = await fetch(SHEETS_API_URL);
-    const dados = await res.json();
-
-    if (!Array.isArray(dados)) throw new Error('Resposta inválida');
-
-    dados.forEach(item => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${item.patrimonio || ''}</td>
-        <td>${item.tipo || ''}</td>
-        <td>${item.modelo || ''}</td>
-        <td>${item.serial || ''}</td>
-        <td>${item.local || ''}</td>
-        <td>${item.status || ''}</td>
-        <td>${item.processador || ''}</td>
-        <td>${item.memoria || ''}</td>
-        <td>${item.so || ''}</td>
-        <td>${item.arquitetura || ''}</td>
-        <td>${item.disco || ''}</td>
-        <td>${item.hostname || ''}</td>`;
-      tabelaBody.appendChild(tr);
-    });
-
-    infoDiv.textContent = `Registros carregados: ${dados.length}`;
-  } catch (e) {
-    erroDiv.textContent = 'Erro ao carregar dados do Google Sheets.';
-    infoDiv.textContent = '';
-    console.error(e);
-  }
+  infoDiv.textContent = 'Leitura direta do Google Sheets não é permitida por CORS. Apenas envio ativo.';
 }
 
-// SALVAR (POST no-cors)
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  erroDiv.textContent = '';
-  infoDiv.textContent = 'Enviando registro...';
-
   const item = {
     patrimonio: patrimonio.value,
     tipo: tipo.value,
@@ -236,19 +194,14 @@ form.addEventListener('submit', async (e) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(item)
     });
-
     infoDiv.textContent = 'Registro enviado ao Google Sheets.';
     form.reset();
     dadosTecnicos.style.display = 'none';
-    carregarDados();
-  } catch (e) {
+  } catch (err) {
     erroDiv.textContent = 'Erro ao salvar no Google Sheets.';
-    infoDiv.textContent = '';
-    console.error(e);
   }
 });
 
-// EXPORTAÇÕES
 document.getElementById('btnXls').addEventListener('click', () => {
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.table_to_sheet(document.getElementById('tabela'));
