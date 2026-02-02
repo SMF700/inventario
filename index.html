@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Inventário de TI - Fonseca Supermercados Ltda</title>
+
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.29/dist/jspdf.plugin.autotable.min.js"></script>
+
   <style>
     :root { --verde:#28a745; --cinza:#f4f6f8; }
     body { font-family: Arial, Helvetica, sans-serif; background:var(--cinza); margin:0; padding:20px; }
@@ -72,6 +74,7 @@
 
       <div id="dadosTecnicos">
         <h3>Dados Técnicos (PDV / Computador)</h3>
+
         <label>Processador</label>
         <input type="text" id="processador">
 
@@ -125,7 +128,18 @@
     <table id="tabela">
       <thead>
         <tr>
-          <th>Patrimônio</th><th>Tipo</th><th>Modelo</th><th>Série</th><th>Local</th><th>Status</th><th>Processador</th><th>Memória</th><th>SO</th><th>Arquitetura</th><th>Disco</th><th>Hostname/IP</th>
+          <th>Patrimônio</th>
+          <th>Tipo</th>
+          <th>Modelo</th>
+          <th>Série</th>
+          <th>Local</th>
+          <th>Status</th>
+          <th>Processador</th>
+          <th>Memória</th>
+          <th>SO</th>
+          <th>Arquitetura</th>
+          <th>Disco</th>
+          <th>Hostname/IP</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -151,6 +165,7 @@ const infoDiv = document.getElementById('info');
 btnLogin.addEventListener('click', () => {
   const u = document.getElementById('loginUser').value;
   const p = document.getElementById('loginPass').value;
+
   if (u === 'ti' && p === 'fonseca123') {
     loginBox.style.display = 'none';
     app.style.display = 'block';
@@ -166,11 +181,14 @@ tipoSelect.addEventListener('change', () => {
 
 function carregarDados() {
   tabelaBody.innerHTML = '';
-  infoDiv.textContent = 'Leitura direta do Google Sheets não é permitida por CORS. Apenas envio ativo.';
+  const dados = JSON.parse(localStorage.getItem('inventario_ti') || '[]');
+  dados.forEach(addLinhaTabela);
+  infoDiv.textContent = 'Dados carregados do armazenamento local. Envio ao Google Sheets ativo.';
 }
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+
   const item = {
     patrimonio: patrimonio.value,
     tipo: tipo.value,
@@ -187,6 +205,11 @@ form.addEventListener('submit', async (e) => {
     dataCadastro: new Date().toISOString()
   };
 
+  const dados = JSON.parse(localStorage.getItem('inventario_ti') || '[]');
+  dados.push(item);
+  localStorage.setItem('inventario_ti', JSON.stringify(dados));
+  addLinhaTabela(item);
+
   try {
     await fetch(SHEETS_API_URL, {
       method: 'POST',
@@ -194,13 +217,32 @@ form.addEventListener('submit', async (e) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(item)
     });
-    infoDiv.textContent = 'Registro enviado ao Google Sheets.';
-    form.reset();
-    dadosTecnicos.style.display = 'none';
+    infoDiv.textContent = 'Registro salvo localmente e enviado ao Google Sheets.';
   } catch (err) {
-    erroDiv.textContent = 'Erro ao salvar no Google Sheets.';
+    erroDiv.textContent = 'Erro ao enviar ao Google Sheets (salvo localmente).';
   }
+
+  form.reset();
+  dadosTecnicos.style.display = 'none';
 });
+
+function addLinhaTabela(item) {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${item.patrimonio}</td>
+    <td>${item.tipo}</td>
+    <td>${item.modelo}</td>
+    <td>${item.serial}</td>
+    <td>${item.local}</td>
+    <td>${item.status}</td>
+    <td>${item.processador || ''}</td>
+    <td>${item.memoria || ''}</td>
+    <td>${item.so || ''}</td>
+    <td>${item.arquitetura || ''}</td>
+    <td>${item.disco || ''}</td>
+    <td>${item.hostname || ''}</td>`;
+  tabelaBody.appendChild(tr);
+}
 
 document.getElementById('btnXls').addEventListener('click', () => {
   const wb = XLSX.utils.book_new();
@@ -217,5 +259,6 @@ document.getElementById('btnPdf').addEventListener('click', () => {
   doc.save('inventario_ti.pdf');
 });
 </script>
+
 </body>
 </html>
